@@ -77,3 +77,50 @@ input {
   align-items: center;
   gap: 10px;
 }
+
+/* .items-list {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+} */
+
+.items-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.items-container * {
+  color: #4b527e;
+}
+
+.items-container i {
+  cursor: pointer;
+}
+
+.item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 2%;
+}
+
+.kept {
+  text-decoration-line: line-through;
+}
+
+footer {
+  position: absolute;
+  bottom: 0%;
+
+  display: flex;
+  justify-content: center;
+
+  width: 100vw;
+  font-size: 20px;
+  font-weight: 400;
+  padding: 2% 0%;
+  background-color: #4b527e;
+}
