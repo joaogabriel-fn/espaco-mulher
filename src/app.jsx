@@ -7,27 +7,53 @@ const Logo = () => (
   </header>
 );
 
-const FormAddItem = ({ onHandleSubmit }) => (
-  <section className="form-container">
-    <form onSubmit={onHandleSubmit} className="add-form">
-      <label>O que você precisa guardar?</label>
-      <select name="quantity">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option>10+</option>
-      </select>
-      <input autoComplete="off" placeholder="Manda aqui" name="itemName" />
-      <button>Adicionar</button>
-    </form>
-  </section>
-);
+const FormAddItem = ({ onSubmitItem }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [selectValue, setSelectValue] = useState('1');
+
+  const handleChangeInput = (e) => setInputValue(e.target.value);
+  const handleChangeSelect = (e) => setSelectValue(e.target.value);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmitItem({
+      id: crypto.randomUUID(),
+      quantity: +selectValue,
+      name: inputValue,
+      isKept: false,
+    });
+
+    setInputValue('');
+    setSelectValue('1');
+  };
+
+  return (
+    <section className="form-container">
+      <form onSubmit={handleSubmit} className="add-form">
+        <label>O que você precisa guardar?</label>
+        <select value={selectValue} onChange={handleChangeSelect}>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10+</option>
+        </select>
+        <input
+          value={inputValue}
+          onChange={handleChangeInput}
+          autoComplete="off"
+          placeholder="Manda aqui"
+        />
+        <button>Adicionar</button>
+      </form>
+    </section>
+  );
+};
 
 const ListOfItems = ({ items, orderBy, onClickCheck, onClickRemove }) => {
   const sortedItems =
@@ -100,22 +126,7 @@ const useItems = () => {
   const [items, setItems] = useState([]);
   const [orderBy, setOrderBy] = useState('newest');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const { quantity, itemName } = e.target.elements;
-
-    setItems((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        quantity: +quantity.value,
-        name: itemName.value,
-        isKept: false,
-      },
-    ]);
-  };
-
+  const handleSubmitForm = (newItem) => setItems((prev) => [...prev, newItem]);
   const handleChangeOrder = (e) => setOrderBy(e.target.value);
   const handleClickRemove = (id) => {
     setItems((prev) => prev.filter((item) => item.id != id));
@@ -133,7 +144,7 @@ const useItems = () => {
   return {
     items,
     orderBy,
-    handleSubmit,
+    handleSubmitForm,
     handleChangeOrder,
     handleClickRemove,
     handleClickClearList,
@@ -148,7 +159,7 @@ const App = () => {
     <>
       <Logo />
 
-      <FormAddItem onHandleSubmit={state.handleSubmit} />
+      <FormAddItem onSubmitItem={state.handleSubmitForm} />
 
       <ListOfItems
         items={state.items}
