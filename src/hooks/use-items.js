@@ -1,8 +1,26 @@
-import { useState } from 'react';
+import localforage from 'localforage';
+import { useState, useEffect } from 'react';
 
 const useItems = () => {
   const [items, setItems] = useState([]);
   const [orderBy, setOrderBy] = useState('newest');
+
+  useEffect(() => {
+    localforage
+      .setItem('guardaCoisas', items)
+      .catch((err) => alert(err.message));
+  }, [items]);
+
+  useEffect(() => {
+    localforage
+      .getItem('guardaCoisas')
+      .then((value) => {
+        if (value) {
+          setItems(value);
+        }
+      })
+      .catch((err) => alert(err.message));
+  }, []);
 
   const handleSubmitForm = (newItem) => setItems((prev) => [...prev, newItem]);
   const handleChangeOrder = (e) => setOrderBy(e.target.value);
@@ -14,8 +32,8 @@ const useItems = () => {
   const handleClickCheck = (id) => {
     setItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, isKept: !item.isKept } : item,
-      ),
+        item.id === id ? { ...item, isKept: !item.isKept } : item
+      )
     );
   };
 
@@ -26,7 +44,7 @@ const useItems = () => {
     handleChangeOrder,
     handleClickRemove,
     handleClickClearList,
-    handleClickCheck,
+    handleClickCheck
   };
 };
 
